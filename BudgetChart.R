@@ -17,12 +17,13 @@ HospitalRenovation_total <- 114.5*10^9,
 M4Line_planned <- 120*10^9,
 M4Line_final <- 452*10^9,
 M6Highway_2010 <- 384.7*10^9,
-AvgProperty <- 27.1*10^6) #Average property of a Hungarian family @end of 2017
+FelcsuTrain <- 1.15*10^9,
+AvgProperty <- 27.1*10^6) #Average welth of a Hungarian family @end of 2017
 
 dat <- sqrt(dat/dat$AvgProperty) #each pixel is a Ford Mondeo and sqrt is for square side sizes
 gap <- 10 #gap between rectangles on the plot
 
-plot <- ggplot(data=dat) + coord_fixed(ratio = 1)
+plot <- ggplot(data=dat) + coord_fixed(ratio = 1) +ggtitle("Some hugh figures from Hungary compared to the avarege \n family welth")+ xlab("x27,1 million HUF") + ylab("x27,1 million HUF") + theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5))
 #total value of hospital restorations since 2010 according to government communication
 THx1 <- 0
 THx2 <- THx1+dat$HospitalRenovation_total
@@ -104,20 +105,20 @@ M6y2 <- M6y1+dat$M6Highway_2010
 plot <- plot + geom_rect(mapping = aes(xmin=M6x1, xmax=M6x2, ymin=M6y1, ymax=M6y2, fill="Building of M6 highway 384.7 billion HUF"), alpha=0.5)
 
 #M4 metro line final cost
-M4x1 <- M6x2+gap
+M4x1 <- BBRx1
 M4x2 <- M4x1+dat$M4Line_final
 M4y1 <- BBRy2+gap
 M4y2 <- M4y1+dat$M4Line_final
 
-plot <- plot + geom_rect(mapping = aes(xmin=M4x1, xmax=M4x2, ymin=M4y1, ymax=M4y2, fill="Building of M4 metroline 452 billion HUF"), alpha=0.5)
+plot <- plot + geom_rect(mapping = aes(xmin=M4x1, xmax=M4x2, ymin=M4y1, ymax=M4y2, fill="Building of M4 metroline - final cost: 452 billion HUF"), alpha=0.5)
 
 #M4 metro line planned original cost
-M4Ox1 <- M6x2+gap
+M4Ox1 <- M4x1
 M4Ox2 <- M4x1+dat$M4Line_planned
-M4Oy1 <- BBRy2+gap
+M4Oy1 <- M4y1
 M4Oy2 <- M4y1+dat$M4Line_planned
 
-plot <- plot + geom_rect(mapping = aes(xmin=M4Ox1, xmax=M4Ox2, ymin=M4Oy1, ymax=M4Oy2, fill="Building of M4 metroline 452 billion HUF"), alpha=0.5)
+plot <- plot + geom_rect(mapping = aes(xmin=M4Ox1, xmax=M4Ox2, ymin=M4Oy1, ymax=M4Oy2, fill="Building of M4 metroline - planned cost: 120 billion HUF"), alpha=0.5)
 
 #renovation of Bp tunnel and chain bridge
 TCx1 <- THx2+gap
@@ -127,6 +128,30 @@ TCy2 <- TCy1+dat$TunnelChaneBridge_planned
 
 plot <- plot + geom_rect(mapping = aes(xmin=TCx1, xmax=TCx2, ymin=TCy1, ymax=TCy2, fill="Joint renovation of castle hill tunnel and Chain Bridge in Budapest- planned: 23 billion HUF"), alpha=0.7)
 
-plot <- plot + scale_fill_manual(name="Cost", values = c('lightgreen', 'springgreen', 'springgreen4', 'darkorange', 'aquamarine4', 'red', 'blue', 'gold', 'goldenrod3', 'cornsilk', 'green4', 'deepskyblue3'))
+#Railway of Vali-valley (Felcsut) - Felcsut railway
+FRx1 <- TCx2+gap
+FRx2 <- FRx1+dat$FelcsuTrain
+FRy1 <- TCy2+gap
+FRy2 <- FRy1+dat$FelcsuTrain
+
+plot <- plot + geom_rect(mapping = aes(xmin=FRx1, xmax=FRx2, ymin=FRy1, ymax=FRy2, fill="Vali-valley (Felcsut) railway 1.15 billion HUF"), alpha=0.5)
+
+#Average welth of a Hungarian family
+APx1 <- TCx2+gap
+APx2 <- APx1+dat$AvgProperty
+APy1 <- TCy2
+APy2 <- APy1-dat$AvgProperty
+
+plot <- plot + geom_rect(mapping = aes(xmin=APx1, xmax=APx2, ymin=APy1, ymax=APy2, fill="Average welth of a Hungarian family 27.1 million HUF"), alpha=1)
+
+#Estimated value of Lorinc Meszaros' properties
+LMx1 <- 0
+LMx2 <- LMx1+dat$MeszarosLoLo
+LMy1 <- M6y2+gap
+LMy2 <- LMy1+dat$MeszarosLoLo
+
+plot <- plot + geom_rect(mapping = aes(xmin=LMx1, xmax=LMx2, ymin=LMy1, ymax=LMy2, fill="Estimated value of Lorinc Meszaros' properties 381.3 billion HUF"), alpha=0.5)
+
+plot <- plot + scale_fill_manual(name="Cost", values = c('lightgreen', 'springgreen', 'springgreen4', 'darkorange', 'aquamarine4', 'red', 'blue', 'gold', 'goldenrod3', 'cornsilk', 'green4', 'deepskyblue3', 'maroon4', 'red', 'green', 'burlywood2'))
 
 plot
