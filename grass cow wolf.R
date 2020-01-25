@@ -1,5 +1,3 @@
-library(ggplot2)
-
 #simulaton_length
 days <- 3*365
 
