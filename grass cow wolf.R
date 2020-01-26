@@ -1,7 +1,7 @@
 #simulaton_length
 days <- 3*365
 
-#Parameters
+#Environment parameters
 o2_level <- 0.16
 temperature <- 22
 rain <- 22
@@ -15,15 +15,17 @@ grass_preferred_temp <- 25
 #Grazers
 cow=c(200)
 cow_preferred_temp <- 24
+cp <- 1 #parameter related cow population growth
 #Predators
 wolf=c(1)
 wolf_preferred_temp <- 18
+wop <- 1
 
 #time flies
 for (time in 2:days)
 {
   #plant growth
-  grass <- append(grass, (grass[time-1] + grass[time-1]*o2_level*dnorm(temperature, mean=grass_preferred_temp, sd=5)*(rain/100)*(daytime_hours*100)))
+  grass <- append(grass, (grass[time-1] + grass[time-1]*o2_level*dnorm(temperature, mean=grass_preferred_temp, sd=5)*(rain/10)*(daytime_hours*100)))
 
   #cows live and eat grass
   #a cow needs 20kg of grass a day
@@ -39,7 +41,7 @@ for (time in 2:days)
     }
   }
   else{ #if there is enough grass
-    cow <- append(cow, cow[time-1]*(1+20*dnorm(temperature, mean=cow_preferred_temp, sd=10)))
+    cow <- append(cow, cow[time-1]*(1+cp*dnorm(temperature, mean=cow_preferred_temp, sd=10)))
     grass[time] <- grass[time] - 20*cow[time]
   }
   
@@ -57,7 +59,7 @@ for (time in 2:days)
     }
   }
   else{ #if there is enough cow
-    wolf <- append(wolf, wolf[time-1]*(1+98.915*dnorm(temperature, mean=wolf_preferred_temp, sd=15)))
+    wolf <- append(wolf, wolf[time-1]*(1+wop*dnorm(temperature, mean=wolf_preferred_temp, sd=15)))
     cow[time] <- cow[time] - (1/20)*wolf[time]
   }
   
@@ -70,6 +72,28 @@ else if (cow[time] < 1) {
 else if (wolf[time] < 1) {
   cat("no more wolves at ", time)
 }
+  
+#adjusting cp and WOP
+  
+  #if grass can feed 10 times as much cows let's double cp
+  if (grass[time] >= 10*cow[time]){
+    cp <- 2*cp
+  }
+  #if grass is not enough for all the cows plus one more cow let's devide cp by 10
+  else if (grass[time] < cow[time]+1){
+    cp <- cp/10
+  }
+  #else cp stays the same
+  
+  #if cows can feed 4 times the number of wolves let's increase wop
+  if (cow[time] >= 4*wolf[time]){
+    wop <- 4.75*wop
+  }
+  #if cows are not enogh for all the wolves let's divide wop by 1
+  else if (cow[time] < wolf[time]+1){
+    wop <- wop/10
+  }
+  #else wop stays the same
   
 } #end of time, the world and everything
 
